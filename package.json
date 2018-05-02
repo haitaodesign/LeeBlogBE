@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index"
+    "dev": "nodemon index",
+    "lint": "eslint --ext .js ./",
+    "lint-fix":"eslint --fix ./"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,12 @@
     "mongolass": "^4.2.0"
   },
   "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.1.0",
     "nodemon": "^1.17.3"
   }
 }
