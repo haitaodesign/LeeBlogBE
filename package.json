@@ -21,7 +21,8 @@
   "dependencies": {
     "config-lite": "^2.1.0",
     "koa": "^2.5.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "mongolass": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.3"
