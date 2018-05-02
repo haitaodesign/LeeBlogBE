@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/haitaodesign/LeeBlogBE/issues"
   },
-  "homepage": "https://github.com/haitaodesign/LeeBlogBE#readme"
+  "homepage": "https://github.com/haitaodesign/LeeBlogBE#readme",
+  "dependencies": {
+    "koa": "^2.5.1"
+  }
 }
