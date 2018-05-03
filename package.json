@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index",
     "lint": "eslint --ext .js ./",
-    "lint-fix":"eslint --fix ./"
+    "lint-fix": "eslint --fix ./"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "dependencies": {
     "config-lite": "^2.1.0",
     "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.4.0",
     "mongolass": "^4.2.0"
   },

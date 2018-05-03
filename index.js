@@ -1,13 +1,10 @@
 const Koa = require('koa')
 const app = new Koa()
-
 const config = require('config-lite')(__dirname)
-
-app.use(async (ctx, next) => {
-  ctx.response.type = 'text/html'
-  ctx.response.body = '<h1>hello koa!</h1>'
-})
-
+const bodyParser = require('koa-bodyparser')
+const router = require('./routes/router')
+app.use(bodyParser())
+app.use(router.routes()).use(router.allowedMethods())
 app.listen(config.port, () => {
   console.log('server is running at http://localhost:3000')
 })
