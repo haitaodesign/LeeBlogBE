@@ -27,7 +27,7 @@ module.exports = {
       })
     } catch (error) {
       ctx.body = Object.assign(ERROR, {
-        message: '用户添加成功！'
+        message: error.message
       })
     }
   }
