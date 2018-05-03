@@ -2,7 +2,7 @@ const User = require('../models/user')
 const {ERROR, SUCCESS} = require('../lib/util')
 const md5 = require('js-md5')
 module.exports = {
-  async add (ctx, next) {
+  async add (ctx) {
     try {
       // 解析参数
       const {username, password, email, avatar} = ctx.request.body
@@ -30,5 +30,8 @@ module.exports = {
         message: error.message
       })
     }
+  },
+  async update (ctx) {
+
   }
 }
