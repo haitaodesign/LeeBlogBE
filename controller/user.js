@@ -32,6 +32,9 @@ module.exports = {
     }
   },
   async update (ctx) {
-
+    // 查询当前数据是否存在
+    // 用户名是否重复
+    // 存在，则修改，否则，提示该数据不存在
+    const {_id} = ctx.request.body
   }
 }
