@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const {ERROR, SUCCESS} = require('../lib/util')
+const md5 = require('js-md5')
 module.exports = {
   async add (ctx, next) {
     try {
@@ -14,7 +15,7 @@ module.exports = {
       }
       let user = {
         username,
-        password,
+        password: md5(password),
         email,
         avatar
       }
