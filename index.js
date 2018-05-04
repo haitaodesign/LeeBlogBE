@@ -9,6 +9,7 @@ const format = require('./utils/response')
 const constants = require('./utils/constants')
 app.use(bodyParser())
 
+// 中间件的顺序很重要,顺序不对导致无法正确捕获异常
 app.use(async (ctx, next) => {
   try {
     await next()
