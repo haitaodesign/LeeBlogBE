@@ -25,7 +25,7 @@
     "dayjs": "^1.5.17",
     "js-md5": "^0.7.3",
     "koa": "^2.5.1",
-    "koa-bodyparser": "^4.2.0",
+    "koa-body": "^2.5.0",
     "koa-router": "^7.4.0",
     "koa-validate": "^1.0.7",
     "mongolass": "^4.2.0",
