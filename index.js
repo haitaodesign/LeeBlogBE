@@ -1,13 +1,13 @@
 const Koa = require('koa')
 const app = new Koa()
 const config = require('config-lite')(__dirname)
-const bodyParser = require('koa-bodyparser')
+const koaBody = require('koa-body')
 const router = require('./routes/router')
 
 const {CustomError, HttpError} = require('./utils/customError')
 const format = require('./utils/response')
 const constants = require('./utils/constants')
-app.use(bodyParser())
+app.use(koaBody())
 
 // 中间件的顺序很重要,顺序不对导致无法正确捕获异常
 app.use(async (ctx, next) => {
