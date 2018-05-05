@@ -9,11 +9,11 @@ module.exports = {
       // 解析参数
       const {username, password, email, avatar} = ctx.request.body
       // 校验参数
-      if (!username.length) {
-        throw new Error('用户名不能为空！')
-      }
-      if (!password.length) {
-        throw new Error('密码不能为空！')
+      ctx.checkBody('username').notEmpty().len(3, 20)
+      ctx.checkBody('password').notEmpty().len(6, 18)
+      if (ctx.errors) {
+        let field = Object.keys(ctx.errors[0])
+        throw new Error(ctx.errors[0][field])
       }
       let user = {
         username,
@@ -28,7 +28,7 @@ module.exports = {
         message: '用户添加成功！'
       })
     } catch (error) {
-      throw new CustomError(constants.HTTP_CODE.INTERNAL_SERVER_ERROR, error.message)
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   },
   async update (ctx) {
