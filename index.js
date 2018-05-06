@@ -1,4 +1,5 @@
 const Koa = require('koa')
+const ip = require('ip')
 const app = new Koa()
 const config = require('config-lite')(__dirname)
 const koaBody = require('koa-body')
@@ -8,6 +9,15 @@ const router = require('./routes/router')
 const {CustomError, HttpError} = require('./utils/customError')
 const format = require('./utils/response')
 const constants = require('./utils/constants')
+
+const leeLog = require('./middleware/lee-log/index')
+app.use(leeLog({
+  env: app.env,
+  projectName: 'leeblogfe',
+  appLogLevel: 'debug',
+  dir: 'logs',
+  serverIp: ip.address()
+}))
 app.use(koaBody({multipart: true, formidable: {keepExtensions: true}}))
 
 // 中间件的顺序很重要,顺序不对导致无法正确捕获异常
