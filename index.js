@@ -4,6 +4,7 @@ const app = new Koa()
 const config = require('config-lite')(__dirname)
 const koaBody = require('koa-body')
 require('koa-validate')(app)
+const koaJwt = require('koa-jwt')
 const router = require('./routes/router')
 
 const {CustomError, HttpError} = require('./utils/customError')
@@ -11,6 +12,7 @@ const format = require('./utils/response')
 const constants = require('./utils/constants')
 
 const leeLog = require('./middleware/lee-log/index')
+const leejwt = require('./middleware/lee-jwt/index')
 app.use(leeLog({
   env: app.env,
   projectName: 'leeblogfe',
@@ -32,12 +34,19 @@ app.use(async (ctx, next) => {
       ctx.status = err instanceof HttpError ? res.code : 200
       code = res.code
       msg = res.msg
+    } else if (err.status === 401) {
+      ctx.status = 401
+      code = '-1'
+      msg = 'unauthorized'
     } else {
       console.error('err', err)
     }
     ctx.body = format(code, {}, msg)
   }
 })
+const secert = 'leehaitao'
+app.use(koaJwt({secert}))
+
 app.use(router.routes()).use(router.allowedMethods())
 
 // 404
