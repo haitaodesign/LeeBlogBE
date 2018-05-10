@@ -12,7 +12,6 @@ const format = require('./utils/response')
 const constants = require('./utils/constants')
 
 const leeLog = require('./middleware/lee-log/index')
-const leejwt = require('./middleware/lee-jwt/index')
 app.use(leeLog({
   env: app.env,
   projectName: 'leeblogfe',
@@ -44,8 +43,8 @@ app.use(async (ctx, next) => {
     ctx.body = format(code, {}, msg)
   }
 })
-const secert = 'leehaitao'
-app.use(koaJwt({secert}))
+// const secert = 'leehaitao'
+// app.use(koaJwt({secert}))
 
 app.use(router.routes()).use(router.allowedMethods())
 

@@ -1,8 +1,8 @@
 const User = require('../models/user')
-const {ERROR, SUCCESS} = require('../lib/util')
 const md5 = require('js-md5')
-const {CustomError, HttpError} = require('../utils/customError')
+const {CustomError} = require('../utils/customError')
 const constants = require('../utils/constants')
+const response = require('../utils/response')
 module.exports = {
   async add (ctx, next) {
     try {
@@ -22,11 +22,9 @@ module.exports = {
         avatar
       }
       // 写入数据库，数据层交互可以分service层
-      await User.create(user)
+      await User.create(user).exec()
       // 数据响应
-      ctx.body = Object.assign(SUCCESS, {
-        message: '用户添加成功！'
-      })
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '用户添加成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
