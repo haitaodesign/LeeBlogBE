@@ -3,8 +3,9 @@ const md5 = require('js-md5')
 const {CustomError} = require('../utils/customError')
 const constants = require('../utils/constants')
 const response = require('../utils/response')
-module.exports = {
-  async add (ctx, next) {
+
+export default class UserController {
+  static async add (ctx, next) {
     try {
       // 解析参数
       const {username, password, email, avatar} = ctx.request.body
@@ -28,11 +29,5 @@ module.exports = {
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
-  },
-  async update (ctx) {
-    // 查询当前数据是否存在
-    // 用户名是否重复
-    // 存在，则修改，否则，提示该数据不存在
-    // const {_id} = ctx.request.body
   }
 }
