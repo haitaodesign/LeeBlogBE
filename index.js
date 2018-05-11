@@ -1,12 +1,12 @@
-const Koa = require('koa')
-const ip = require('ip')
+import Koa from 'koa'
+import router from './routes/index'
+import ip from 'ip'
+import koaBody from 'koa-body'
 const app = new Koa()
 const config = require('config-lite')(__dirname)
-const koaBody = require('koa-body')
 require('koa-validate')(app)
-const koaJwt = require('koa-jwt')
+// const koaJwt = require('koa-jwt')
 const koaCors = require('koa2-cors')
-const router = require('./routes/router')
 
 const {CustomError, HttpError} = require('./utils/customError')
 const format = require('./utils/response')
@@ -47,7 +47,6 @@ app.use(async (ctx, next) => {
 })
 // const secert = 'leehaitao'
 // app.use(koaJwt({secert}))
-
 app.use(router.routes()).use(router.allowedMethods())
 
 // 404

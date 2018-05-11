@@ -1,13 +1,27 @@
+import { request, summary, query, path, body, tags } from 'koa-swagger-decorator'
+import md5 from 'js-md5'
 const User = require('../models/user')
-const md5 = require('js-md5')
 const {CustomError} = require('../utils/customError')
 const constants = require('../utils/constants')
 const response = require('../utils/response')
 
+const testTag = tags(['test'])
+const userSchema = {
+  username:{type:'string',require:true,descripttion:'用户名'},
+    password:{type:'string',require:true,descripttion:'密码'},
+    email:{type:'string',descripttion:'电子邮箱'},
+    avatar:{type:'string',descripttion:'头像，存储图片地址'}
+};
+
 export default class UserController {
+  @request('post','/user/add')
+  @summary('添加一个用户')
+  @testTag
+  @body(userSchema)
   static async add (ctx, next) {
     try {
       // 解析参数
+      console.log(ctx.request.body)
       const {username, password, email, avatar} = ctx.request.body
       // 校验参数
       ctx.checkBody('username').notEmpty().len(3, 20)
