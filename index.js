@@ -5,6 +5,7 @@ const config = require('config-lite')(__dirname)
 const koaBody = require('koa-body')
 require('koa-validate')(app)
 const koaJwt = require('koa-jwt')
+const koaCors = require('koa2-cors')
 const router = require('./routes/router')
 
 const {CustomError, HttpError} = require('./utils/customError')
@@ -12,6 +13,7 @@ const format = require('./utils/response')
 const constants = require('./utils/constants')
 
 const leeLog = require('./middleware/lee-log/index')
+app.use(koaCors())
 app.use(leeLog({
   env: app.env,
   projectName: 'leeblogfe',
