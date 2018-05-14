@@ -17,10 +17,10 @@ const response = require('../utils/response')
 
 const testTag = tags(['用户管理'])
 const userSchema = {
-  // _id:{
-  //   type:'string',
-  //   descripttion: '唯一id'
-  // },
+  _id:{
+    type:'string',
+    descripttion: '唯一id'
+  },
   username: {
     type: 'string',
     require: true,
@@ -92,16 +92,20 @@ export default class UserController {
   @testTag
   @body(userSchema)
   static async update(ctx, next) {
-
-    // 先通过_id查找是否有此条数据
     try {
       const data = ctx.request.body
-      const {_id} = data
-      const getUserToId= await User.findOne({_id}).exec()
-      console.log(getUserToId)
-
+      const {_id} =data
+      const curUser = await User.findOne({_id:_id}).exec()
+      console.log(curUser)
+      const getUserToId= curUser._id;
+      if(_id==getUserToId){
+        await User.update({_id:getUserToId},{$set:data}).exec()
+        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改用户成功')
+      }else{
+        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改用户失败')
+      }
     } catch (error) {
-
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
   @request('post', '/users')
