@@ -44,11 +44,13 @@ const userSchema = {
 let UserPageSchema={
   current:{
     type:'number',
-    require:true
+    require:true,
+    default:1
   },
   pageSize:{
     type:'number',
-    require:true
+    require:true,
+    default:10
   }
 }
 
@@ -83,6 +85,26 @@ export default class UserController {
       await User.create(user).exec()
       // 数据响应
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '用户添加成功')
+    } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('delete', '/user/{_id}')
+  @summary('修改一个用户')
+  @testTag
+  @path({
+    _id:{type:'string',require:true,descripttion:'唯一_id'}
+  })
+  static async delete(ctx,next){
+    try {
+      const {_id} = ctx.params
+      ctx.checkParams('_id').notEmpty()
+      if (ctx.errors) {
+        let field = Object.keys(ctx.errors[0])
+        throw new Error(ctx.errors[0][field])
+      }
+      await User.deleteOne({_id}).exec()
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除用户成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
