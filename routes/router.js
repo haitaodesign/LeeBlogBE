@@ -1,6 +1,7 @@
 import Router from 'koa-router'
 import User from '../controller/user'
 import Test from '../controller/test'
+import Label from '../controller/label'
 import {wrapper} from 'koa-swagger-decorator'
 const router = new Router()
 wrapper(router)
@@ -23,6 +24,7 @@ router.swagger({
 })
 
 router.map(User)
+router.map(Label)
 router.map(Test)
 
 export default router
