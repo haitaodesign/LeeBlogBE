@@ -26,6 +26,14 @@ const labelSchema = {
   }
 }
 
+const updateLabel = Object.assign(labelSchema,{
+  _id:{
+    type:'string',
+    require:true,
+    descripttion:'唯一_id'
+  }
+})
+
 export default class LabelController {
   @request('post','label/add')
   @summary('添加一个标签')
@@ -64,6 +72,24 @@ export default class LabelController {
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除标签成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('post','label/update')
+  @summary('修改一个标签')
+  @LabelTag
+  @body(updateLabel)
+  static async update (ctx,next){
+    try {
+      const data = ctx.request.body
+      const {_id} = data
+      const curLabel = Label.findOne({_id}).exec()
+      const getLabelId=curLabel._id
+      if(_id==getLabelId){
+        await Label.update({_id:getLabelId},{$set:data}).exec()
+        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改标签成功')
+      }
+    } catch (error) {
+      ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改标签失败')
     }
   }
 }
