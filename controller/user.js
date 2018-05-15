@@ -92,8 +92,8 @@ export default class UserController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('delete', '/user/{_id}')
-  @summary('修改一个用户')
+  @request('delete', '/user/delete/{_id}')
+  @summary('删除一个用户')
   @testTag
   @path({
     _id:{type:'string',require:true,descripttion:'唯一_id'}
