@@ -33,6 +33,19 @@ const updateLabel = Object.assign(labelSchema,{
     descripttion:'唯一_id'
   }
 })
+let LabelPageSchema={
+  current:{
+    type:'number',
+    require:true,
+    default:1
+  },
+  pageSize:{
+    type:'number',
+    require:true,
+    default:10
+  }
+}
+
 
 export default class LabelController {
   @request('post','label/add')
@@ -90,6 +103,25 @@ export default class LabelController {
       }
     } catch (error) {
       ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改标签失败')
+    }
+  }
+  @request('post', '/labels')
+  @summary('获取标签列表')
+  @LabelTag
+  @body(LabelPageSchema)
+  static async getLabelList (ctx,next){
+    try {
+      const {pageSize,current} = ctx.request.body
+      const labels = await Label.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const all = await Label.find().exec()
+      const page = {
+        current,
+        pageSize,
+        total:all.length
+      }
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, labels, '获取用户列表成功',page)
+    } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
 }
