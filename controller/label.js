@@ -45,6 +45,27 @@ export default class LabelController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
+  @request('delete','label/delete/{_id}')
+  @summary('删除一个标签')
+  @LabelTag
+  @path({
+    _id:{type:'string',require:true,descripttion:'唯一_id'}
+  })
+  static async delete (ctx,next){
+    try {
+      const {_id} = ctx.params
+      ctx.checkParams('_id').notEmpty()
+      if (ctx.errors) {
+        let field = Object.keys(ctx.errors[0])
+        throw new Error(ctx.errors[0][field])
+      }
+      // 删除之前应该查找此标签是否被使用，若被使用则不能删除
+      await Label.deleteOne({_id}).exec()
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除标签成功')
+    } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
 }
 
 
