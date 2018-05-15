@@ -48,7 +48,7 @@ let LabelPageSchema={
 
 
 export default class LabelController {
-  @request('post','label/add')
+  @request('post','/label/add')
   @summary('添加一个标签')
   @LabelTag
   @body(labelSchema)
@@ -66,7 +66,7 @@ export default class LabelController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('delete','label/delete/{_id}')
+  @request('delete','/label/delete/{_id}')
   @summary('删除一个标签')
   @LabelTag
   @path({
@@ -87,7 +87,7 @@ export default class LabelController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('post','label/update')
+  @request('post','/label/update')
   @summary('修改一个标签')
   @LabelTag
   @body(updateLabel)
@@ -95,7 +95,7 @@ export default class LabelController {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curLabel = Label.findOne({_id}).exec()
+      const curLabel = await Label.findOne({_id}).exec()
       const getLabelId=curLabel._id
       if(_id==getLabelId){
         await Label.update({_id:getLabelId},{$set:data}).exec()
