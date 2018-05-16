@@ -67,6 +67,7 @@ export default class ArticleController {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
+      // user_id 通过解析token拿到
       let article = Object.assign(data,{user_id:'2'})
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
@@ -74,5 +75,7 @@ export default class ArticleController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-
+  static async delete (ctx,next){
+    //通过user_id,判断该用户是否拥有此文章的权限，管理员无需进行判断
+  }
 }
