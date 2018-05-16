@@ -6,7 +6,7 @@ import LeeError from './middleware/lee-error/index'
 const app = new Koa()
 const config = require('config-lite')(__dirname)
 require('koa-validate')(app)
-// const koaJwt = require('koa-jwt')
+const koaJwt = require('koa-jwt')
 const koaCors = require('koa2-cors')
 const {HttpError} = require('./utils/customError')
 const constants = require('./utils/constants')
@@ -30,6 +30,7 @@ app.use(koaBody({
 app.use(LeeError())
 // const secert = 'leehaitao'
 // app.use(koaJwt({secert}))
+// 解析token中间件，获取信息以及设置失效时间
 app.use(router.routes()).use(router.allowedMethods())
 
 // 404
