@@ -10,7 +10,8 @@ import {
   tags
 } from 'koa-swagger-decorator'
 import md5 from 'js-md5'
-import { ObjectId } from 'mongolass/lib/Types';
+import { ObjectId } from 'mongolass/lib/Types'
+import jsonwebtoken from 'jsonwebtoken'
 const User = require('../models/user')
 const {
   CustomError
@@ -54,6 +55,19 @@ let UserPageSchema={
     type:'number',
     require:true,
     default:10
+  }
+}
+
+let LoginSchema={
+  username:{
+    type:'string',
+    require:true,
+    descripttion:'用户名'
+  },
+  password:{
+    type:'string',
+    require:true,
+    descripttion:'密码'
   }
 }
 
@@ -149,6 +163,38 @@ export default class UserController {
       }
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, users, '获取用户列表成功',page)
     } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('post', '/login')
+  @summary('登录')
+  @testTag
+  @body(LoginSchema)
+  static async login(ctx,next){
+    try {
+      const data = ctx.request.body
+      ctx.checkBody('username').notEmpty().len(3, 20)
+      ctx.checkBody('password').notEmpty().len(6, 18)
+      if (ctx.errors) {
+        let field = Object.keys(ctx.errors[0])
+        throw new Error(ctx.errors[0][field])
+      }
+      const {username,password} = data
+      const user= await User.findOne({username}).exec()
+      if(md5(password)===user.password){
+        // 生成token
+        const secret='leehaitao'
+        const token = jsonwebtoken.sign({
+          data:{
+            _id:user._id,
+            username
+          },
+          exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        },secret)
+        ctx.body=response(constants.CUSTOM_CODE.SUCCESS, {token}, '登录成功')
+      }
+    } catch (error) {
+      console.log(error)
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
