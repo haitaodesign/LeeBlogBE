@@ -35,7 +35,8 @@ const secret = 'leehaitao'
 app.use(koaJwt({secret}).unless({
   path: [/\/api\/swagger-html/, /\/api\/swagger-json/, /\/api\/login/]
 }))
-app.use(router.routes()).use(router.allowedMethods())
+app.use(router.routes())
+  .use(router.allowedMethods())
 
 // 404
 app.use(async () => {
