@@ -23,7 +23,7 @@ const articleSchema = {
     type: 'string',
     descripttion: '唯一id'
   },
-  tiltle: {
+  title: {
     type: 'string',
     require: true,
     descripttion: '文章标题'
@@ -68,7 +68,8 @@ export default class ArticleController {
         throw new Error(ctx.errors[0][field])
       }
       // user_id 通过解析token拿到
-      let article = Object.assign(data,{user_id:'2'})
+      const {_id} = ctx.state.user.data
+      let article = Object.assign(data,{user_id:_id})
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
     } catch (error) {
