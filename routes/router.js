@@ -29,6 +29,6 @@ router.map(User)
 router.map(Label)
 router.map(Category)
 router.map(Article)
-router.map(Test)
+// router.map(Test)
 
 export default router
