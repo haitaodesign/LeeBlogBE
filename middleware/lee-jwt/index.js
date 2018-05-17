@@ -5,8 +5,8 @@ const verify = util.promisify(jwt.verify)
 export default () => {
   return async function (ctx, next) {
     try {
-      const token = ctx.header.authorization.replace(/Bearer/, '').trim() // 获取jwt
-      if (token) {
+      if (ctx.header.authorization) {
+        const token = ctx.header.authorization.replace(/Bearer/, '').trim() // 获取jwt
         let payload
         try {
           payload = await verify(token, 'leehaitao') // 解密payload，获取用户名和ID
@@ -19,8 +19,6 @@ export default () => {
           console.log('token verify fail: ', err)
         }
       }
-
-      console.log(`token: ${token}`)
 
       await next()
     } catch (err) {
