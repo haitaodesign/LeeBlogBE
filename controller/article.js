@@ -9,6 +9,7 @@ import {
   body,
   tags
 } from 'koa-swagger-decorator'
+const day = require('dayjs')
 import Article from '../models/article'
 const {
   CustomError
@@ -38,15 +39,28 @@ const articleSchema = {
     require: true,
     descripttion: '是否发布'
   },
-  categoryId: {
+  category_id: {
     type: 'string',
     require: true,
     descripttion: '目录id'
   },
-  labelId: {
+  label_id: {
     type: 'string',
     require: true,
     descripttion: '标签id,多个，使用逗号拼接'
+  }
+}
+
+let ArticlePageSchema={
+  current:{
+    type:'number',
+    require:true,
+    default:1
+  },
+  pageSize:{
+    type:'number',
+    require:true,
+    default:10
   }
 }
 
@@ -61,22 +75,83 @@ export default class ArticleController {
       ctx.checkBody('title').notEmpty()
       ctx.checkBody('content').notEmpty()
       ctx.checkBody('isPublish').notEmpty()
-      ctx.checkBody('categoryId').notEmpty()
-      ctx.checkBody('labelId').notEmpty()
+      ctx.checkBody('category_id').notEmpty()
+      ctx.checkBody('label_id').notEmpty()
       if (ctx.errors) {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
       // user_id 通过解析token拿到
       const {_id} = ctx.state.user.data
-      let article = Object.assign(data,{user_id:_id})
+      const update_at = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
+      let article = Object.assign(data,{user_id:_id,update_at})
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
+    } catch (error) {
+      console.log(error)
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('delete', '/article/delete/{_id}')
+  @summary('删除一篇文章')
+  @ArticleTag
+  @path({
+    _id:{type:'string',require:true,descripttion:'唯一_id'}
+  })
+  static async delete (ctx,next){
+    try {
+      const {_id} = ctx.params
+      ctx.checkParams('_id').notEmpty()
+      if (ctx.errors) {
+        let field = Object.keys(ctx.errors[0])
+        throw new Error(ctx.errors[0][field])
+      }
+      await Article.deleteOne({_id}).exec()
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除文章成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  static async delete (ctx,next){
-    //通过user_id,判断该用户是否拥有此文章的权限，管理员无需进行判断
+  @request('post', '/article/update')
+  @summary('修改一篇文章')
+  @ArticleTag
+  @body(articleSchema)
+  static async update(ctx, next) {
+    try {
+      const data = ctx.request.body
+      const {_id} = data
+      const curArticle = await Article.findOne({_id:_id}).exec()
+      const getArticleToId= curArticle._id;
+      if(_id==getArticleToId){
+        const update_at =day(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        const updateArttcle = JSON.stringify(Object.assign(data,{update_at}))
+        await Article.update({_id:getArticleToId},{$set:data}).exec()
+        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改用户成功')
+      }else{
+        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改用户失败')
+      }
+    } catch (error) {
+      console.log(error)
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('post', '/articles')
+  @summary('获取文章列表')
+  @ArticleTag
+  @body(ArticlePageSchema)
+  static async getArticleList(ctx,next){
+    try {
+      const {pageSize,current} = ctx.request.body
+      const articles = await Article.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const all = await Article.find().exec()
+      const page = {
+        current,
+        pageSize,
+        total:all.length
+      }
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, articles, '获取用户列表成功',page)
+    } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
   }
 }
