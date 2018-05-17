@@ -192,6 +192,8 @@ export default class UserController {
           exp: Math.floor(Date.now() / 1000) + (60 * 60),
         },secret)
         ctx.body=response(constants.CUSTOM_CODE.SUCCESS, {token}, '登录成功')
+      }else{
+        ctx.body=response(constants.CUSTOM_CODE.ERROR, {}, '密码错误')
       }
     } catch (error) {
       console.log(error)
