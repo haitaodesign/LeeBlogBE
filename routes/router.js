@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 import User from '../controller/user'
-import Test from '../controller/test'
+// import Test from '../controller/test'
 import Label from '../controller/label'
 import Category from '../controller/category'
 import Article from '../controller/article'
@@ -29,6 +29,6 @@ router.map(User)
 router.map(Label)
 router.map(Category)
 router.map(Article)
-router.map(Test)
+// router.map(Test)
 
 export default router
