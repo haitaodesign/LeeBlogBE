@@ -9,7 +9,7 @@ import {
   body,
   tags
 } from 'koa-swagger-decorator'
-import Label from '../models/label'
+import Tag from '../models/tag'
 const {
   CustomError
 } = require('../utils/customError')
@@ -47,8 +47,8 @@ let LabelPageSchema={
 }
 
 
-export default class LabelController {
-  @request('post','/label/add')
+export default class TagController {
+  @request('post','/tag/add')
   @summary('添加一个标签')
   @LabelTag
   @body(labelSchema)
@@ -60,13 +60,13 @@ export default class LabelController {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
-      await Label.create({name}).exec()
+      await Tag.create({name}).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '标签添加成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('delete','/label/delete/{_id}')
+  @request('delete','/tag/delete/{_id}')
   @summary('删除一个标签')
   @LabelTag
   @path({
@@ -81,13 +81,13 @@ export default class LabelController {
         throw new Error(ctx.errors[0][field])
       }
       // 删除之前应该查找此标签是否被使用，若被使用则不能删除
-      await Label.deleteOne({_id}).exec()
+      await Tag.deleteOne({_id}).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除标签成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('post','/label/update')
+  @request('post','/tag/update')
   @summary('修改一个标签')
   @LabelTag
   @body(updateLabel)
@@ -95,25 +95,25 @@ export default class LabelController {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curLabel = await Label.findOne({_id}).exec()
+      const curLabel = await Tag.findOne({_id}).exec()
       const getLabelId=curLabel._id
       if(_id==getLabelId){
-        await Label.update({_id:getLabelId},{$set:data}).exec()
+        await Tag.update({_id:getLabelId},{$set:data}).exec()
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改标签成功')
       }
     } catch (error) {
       ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改标签失败')
     }
   }
-  @request('post', '/labels')
+  @request('post', '/tags')
   @summary('获取标签列表')
   @LabelTag
   @body(LabelPageSchema)
   static async getLabelList (ctx,next){
     try {
       const {pageSize,current} = ctx.request.body
-      const labels = await Label.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
-      const all = await Label.find().exec()
+      const labels = await Tag.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const all = await Tag.find().exec()
       const page = {
         current,
         pageSize,
