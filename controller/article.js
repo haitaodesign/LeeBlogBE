@@ -71,24 +71,30 @@ export default class ArticleController {
   @body(articleSchema)
   static async add (ctx, next) {
     try {
-      const data = ctx.request.body
+      const { title, content, isPublish, category_id, label_id} = ctx.request.body
       ctx.checkBody('title').notEmpty()
       ctx.checkBody('content').notEmpty()
       ctx.checkBody('isPublish').notEmpty()
-      ctx.checkBody('category_id').notEmpty()
-      ctx.checkBody('label_id').notEmpty()
+      // ctx.checkBody('category_id').notEmpty()
+      // ctx.checkBody('label_id').notEmpty()
       if (ctx.errors) {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
       // user_id 通过解析token拿到
-      const {_id} = ctx.state.user.data
-      const update_at = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
-      let article = Object.assign(data,{user_id:_id,update_at})
+      const { _id } = ctx.state.user.data
+      let article = {
+        title,
+        content,
+        isPublish,
+        category_id,
+        label_id,
+        user_id: _id
+      }
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
@@ -100,12 +106,13 @@ export default class ArticleController {
   })
   static async delete (ctx,next){
     try {
-      const {_id} = ctx.params
+      const { _id } = ctx.params
       ctx.checkParams('_id').notEmpty()
       if (ctx.errors) {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
+
       await Article.deleteOne({_id}).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除文章成功')
     } catch (error) {
@@ -126,9 +133,9 @@ export default class ArticleController {
         const update_at =day(new Date()).format('YYYY-MM-DD HH:mm:ss')
         const updateArttcle = JSON.stringify(Object.assign(data,{update_at}))
         await Article.update({_id:getArticleToId},{$set:data}).exec()
-        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改用户成功')
+        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改文章成功')
       }else{
-        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改用户失败')
+        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改文章失败')
       }
     } catch (error) {
       console.log(error)
