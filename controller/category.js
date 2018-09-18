@@ -100,7 +100,7 @@ export default class CategoryController {
       ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改目录失败')
     }
   }
-  @request('post', '/categries')
+  @request('post', '/categories')
   @summary('获取目录列表')
   @CategoryTag
   @body(CategoryPageSchema)
