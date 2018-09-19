@@ -1,5 +1,5 @@
 /**
- * 目录管理
+ * 管理
  */
 import {
   request,
@@ -16,7 +16,7 @@ const {
 const constants = require('../utils/constants')
 const response = require('../utils/response')
 
-const CategoryTag = tags(['目录管理'])
+const CategoryTag = tags(['管理'])
 
 const categorySchema = {
   _id:{
@@ -26,7 +26,7 @@ const categorySchema = {
   name: {
     type: 'string',
     require: true,
-    descripttion: '目录名称'
+    descripttion: '分类名称'
   }
 }
 let CategoryPageSchema={
@@ -44,7 +44,7 @@ let CategoryPageSchema={
 
 export default class CategoryController {
   @request('post','/category/add')
-  @summary('新建一个目录')
+  @summary('新建一个分类')
   @CategoryTag
   @body(categorySchema)
   static async add (ctx,next) {
@@ -56,13 +56,13 @@ export default class CategoryController {
         throw new Error(ctx.errors[0][field])
       }
       await Category.create({name}).exec()
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '目录添加成功')
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '分类添加成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
   @request('delete','/category/delete/{_id}')
-  @summary('删除一个目录')
+  @summary('删除一个分类')
   @CategoryTag
   @path({
     _id:{type:'string',require:true,descripttion:'唯一_id'}
@@ -77,13 +77,13 @@ export default class CategoryController {
       }
       // 删除之前应该查找此标签是否被使用，若被使用则不能删除
       await Category.deleteOne({_id}).exec()
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除目录成功')
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除分类成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
   @request('post','/category/update')
-  @summary('修改一个目录')
+  @summary('修改一个分类')
   @CategoryTag
   @body(categorySchema)
   static async update (ctx,next){
@@ -94,14 +94,14 @@ export default class CategoryController {
       const getCategoryId=curCategory._id
       if(_id==getCategoryId){
         await Category.update({_id:getCategoryId},{$set:data}).exec()
-        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改目录成功')
+        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改分类成功')
       }
     } catch (error) {
-      ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改目录失败')
+      ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改分类失败')
     }
   }
   @request('post', '/categories')
-  @summary('获取目录列表')
+  @summary('获取分类列表')
   @CategoryTag
   @body(CategoryPageSchema)
   static async getUserList(ctx,next){
@@ -114,7 +114,7 @@ export default class CategoryController {
         pageSize,
         total:all.length
       }
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, categories, '获取用户列表成功',page)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, categories, '获取分类列表成功',page)
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
