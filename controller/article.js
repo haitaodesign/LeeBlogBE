@@ -64,6 +64,13 @@ let ArticlePageSchema={
   }
 }
 
+let getArticleById = {
+  _id: {
+    type: 'string',
+    descripttion: '唯一id'
+  }
+}
+
 export default class ArticleController {
   @request('post','/article/add')
   @summary('新增一篇文章')
@@ -157,6 +164,20 @@ export default class ArticleController {
         total:all.length
       }
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, articles, '获取用户列表成功',page)
+    } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('post', '/getArticleById')
+  @summary('通过_id获取文章')
+  @ArticleTag
+  @body(getArticleById)
+  static async getArticleById(ctx,next) {
+    try {
+      const data = ctx.request.body
+      const {_id} = data
+      const curArticle = await Article.findOne({_id:_id}).exec()
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '获取文章详情成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
