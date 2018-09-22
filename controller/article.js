@@ -78,7 +78,7 @@ export default class ArticleController {
   @body(articleSchema)
   static async add (ctx, next) {
     try {
-      const { title, content, isPublish, category_id, label_id} = ctx.request.body
+      const { title, content, isPublish, categoryId, labelId} = ctx.request.body
       ctx.checkBody('title').notEmpty()
       ctx.checkBody('content').notEmpty()
       ctx.checkBody('isPublish').notEmpty()
@@ -94,8 +94,8 @@ export default class ArticleController {
         title,
         content,
         isPublish,
-        category_id,
-        label_id,
+        category_id: categoryId,
+        label_id: labelId,
         user_id: _id
       }
       await Article.create(article).exec()
@@ -168,14 +168,14 @@ export default class ArticleController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('post', '/getArticleById')
+  @request('post', '/article/getArticleById')
   @summary('通过_id获取文章')
   @ArticleTag
   @body(getArticleById)
   static async getArticleById(ctx,next) {
     try {
       const data = ctx.request.body
-      const {_id} = data
+      const { _id } = data
       const curArticle = await Article.findOne({_id:_id}).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '获取文章详情成功')
     } catch (error) {
