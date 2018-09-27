@@ -6,6 +6,7 @@ before_install:
     -in LeeBlog.pem.enc -out ~/.ssh/LeeBlog.pem -d
   - chmod 700 ~/.ssh/LeeBlog.pem
   - echo -e "Host 39.108.159.185\n\tStrictHostKeyChecking no\n" >> ~/.ssh/authorized_keys
+  - echo -e "Host 39.108.159.185\n\tUserKnownHostsFile /dev/null\n" >> ~/.ssh/authorized_keys
 install:
   - yarn
 script:
@@ -20,6 +21,5 @@ after_success:
   # - ssh -i ./LeeBlog.pem root@39.108.159.185
   # 复制压缩代码到生产服务器并解压
   - scp LeeBlogBE.tar root@39.108.159.185:~/usr/node
-  - echo yes
   # 启动PM2守护进程
 
