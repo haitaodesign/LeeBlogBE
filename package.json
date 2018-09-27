@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/haitaodesign/LeeBlogBE#readme",
   "dependencies": {
+    "babel-eslint": "^10.0.0",
     "config-lite": "^2.1.0",
     "dayjs": "^1.5.17",
     "ip": "^1.1.5",

@@ -4,7 +4,6 @@
 import {
   request,
   summary,
-  query,
   path,
   body,
   tags
@@ -26,33 +25,32 @@ const labelSchema = {
   }
 }
 
-const updateLabel = Object.assign(labelSchema,{
-  _id:{
-    type:'string',
-    require:true,
-    descripttion:'唯一_id'
+const updateLabel = Object.assign(labelSchema, {
+  _id: {
+    type: 'string',
+    require: true,
+    descripttion: '唯一_id'
   }
 })
-let LabelPageSchema={
-  current:{
-    type:'number',
-    require:true,
-    default:1
+let LabelPageSchema = {
+  current: {
+    type: 'number',
+    require: true,
+    default: 1
   },
-  pageSize:{
-    type:'number',
-    require:true,
-    default:10
+  pageSize: {
+    type: 'number',
+    require: true,
+    default: 10
   }
 }
 
-
 export default class TagController {
-  @request('post','/tag/add')
+  @request('post', '/tag/add')
   @summary('添加一个标签')
   @LabelTag
   @body(labelSchema)
-  static async add (ctx,next){
+  static async add (ctx, next) {
     try {
       const {name} = ctx.request.body
       ctx.checkBody('name').notEmpty()
@@ -66,13 +64,13 @@ export default class TagController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('delete','/tag/delete/{_id}')
+  @request('delete', '/tag/delete/{_id}')
   @summary('删除一个标签')
   @LabelTag
   @path({
-    _id:{type:'string',require:true,descripttion:'唯一_id'}
+    _id: {type: 'string', require: true, descripttion: '唯一_id'}
   })
-  static async delete (ctx,next){
+  static async delete (ctx, next) {
     try {
       const {_id} = ctx.params
       ctx.checkParams('_id').notEmpty()
@@ -87,18 +85,18 @@ export default class TagController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('post','/tag/update')
+  @request('post', '/tag/update')
   @summary('修改一个标签')
   @LabelTag
   @body(updateLabel)
-  static async update (ctx,next){
+  static async update (ctx, next) {
     try {
       const data = ctx.request.body
       const {_id} = data
       const curLabel = await Tag.findOne({_id}).exec()
-      const getLabelId=curLabel._id
-      if(_id==getLabelId){
-        await Tag.update({_id:getLabelId},{$set:data}).exec()
+      const getLabelId = curLabel._id
+      if (_id === getLabelId) {
+        await Tag.update({_id: getLabelId}, {$set: data}).exec()
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改标签成功')
       }
     } catch (error) {
@@ -109,21 +107,19 @@ export default class TagController {
   @summary('获取标签列表')
   @LabelTag
   @body(LabelPageSchema)
-  static async getLabelList (ctx,next){
+  static async getLabelList (ctx, next) {
     try {
-      const {pageSize,current} = ctx.request.body
-      const labels = await Tag.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const {pageSize, current} = ctx.request.body
+      const labels = await Tag.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
       const all = await Tag.find().exec()
       const page = {
         current,
         pageSize,
-        total:all.length
+        total: all.length
       }
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, labels, '获取用户列表成功',page)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, labels, '获取用户列表成功', page)
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
 }
-
-

@@ -4,13 +4,11 @@
 import {
   request,
   summary,
-  query,
   path,
   body,
   tags
 } from 'koa-swagger-decorator'
 import md5 from 'js-md5'
-import { ObjectId } from 'mongolass/lib/Types'
 import jsonwebtoken from 'jsonwebtoken'
 const User = require('../models/user')
 const {
@@ -21,8 +19,8 @@ const response = require('../utils/response')
 
 const testTag = tags(['用户管理'])
 const userSchema = {
-  _id:{
-    type:'string',
+  _id: {
+    type: 'string',
     descripttion: '唯一id'
   },
   username: {
@@ -43,31 +41,31 @@ const userSchema = {
     type: 'string',
     descripttion: '头像，存储图片地址'
   }
-};
+}
 
-let UserPageSchema={
-  current:{
-    type:'number',
-    require:true,
-    default:1
+let UserPageSchema = {
+  current: {
+    type: 'number',
+    require: true,
+    default: 1
   },
-  pageSize:{
-    type:'number',
-    require:true,
-    default:10
+  pageSize: {
+    type: 'number',
+    require: true,
+    default: 10
   }
 }
 
-let LoginSchema={
-  username:{
-    type:'string',
-    require:true,
-    descripttion:'用户名'
+let LoginSchema = {
+  username: {
+    type: 'string',
+    require: true,
+    descripttion: '用户名'
   },
-  password:{
-    type:'string',
-    require:true,
-    descripttion:'密码'
+  password: {
+    type: 'string',
+    require: true,
+    descripttion: '密码'
   }
 }
 
@@ -76,12 +74,11 @@ export default class UserController {
   @summary('添加一个用户')
   @testTag
   @body(userSchema)
-  static async add(ctx, next) {
+  static async add (ctx, next) {
     try {
       // 解析参数
       const {
         username,
-        password,
         email,
         avatar
       } = ctx.request.body
@@ -109,9 +106,9 @@ export default class UserController {
   @summary('删除一个用户')
   @testTag
   @path({
-    _id:{type:'string',require:true,descripttion:'唯一_id'}
+    _id: {type: 'string', require: true, descripttion: '唯一_id'}
   })
-  static async delete(ctx,next){
+  static async delete (ctx, next) {
     try {
       const {_id} = ctx.params
       ctx.checkParams('_id').notEmpty()
@@ -129,17 +126,17 @@ export default class UserController {
   @summary('修改一个用户')
   @testTag
   @body(userSchema)
-  static async update(ctx, next) {
+  static async update (ctx, next) {
     try {
       const data = ctx.request.body
-      const {_id} =data
-      const curUser = await User.findOne({_id:_id}).exec()
+      const {_id} = data
+      const curUser = await User.findOne({_id: _id}).exec()
       console.log(curUser)
-      const getUserToId= curUser._id;
-      if(_id==getUserToId){
-        await User.update({_id:getUserToId},{$set:data}).exec()
+      const getUserToId = curUser._id
+      if (_id === getUserToId) {
+        await User.update({_id: getUserToId}, {$set: data}).exec()
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改用户成功')
-      }else{
+      } else {
         ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改用户失败')
       }
     } catch (error) {
@@ -150,17 +147,17 @@ export default class UserController {
   @summary('获取用户列表')
   @testTag
   @body(UserPageSchema)
-  static async getUserList(ctx,next){
+  static async getUserList (ctx, next) {
     try {
-      const {pageSize,current} = ctx.request.body
-      const users = await User.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const {pageSize, current} = ctx.request.body
+      const users = await User.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
       const all = await User.find().exec()
       const page = {
         current,
         pageSize,
-        total:all.length
+        total: all.length
       }
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, users, '获取用户列表成功',page)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, users, '获取用户列表成功', page)
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
@@ -169,7 +166,7 @@ export default class UserController {
   @summary('登录')
   @testTag
   @body(LoginSchema)
-  static async login(ctx,next){
+  static async login (ctx, next) {
     try {
       const data = ctx.request.body
       ctx.checkBody('username').notEmpty().len(3, 20)
@@ -178,21 +175,21 @@ export default class UserController {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
-      const {username,password} = data
-      const user= await User.findOne({username}).exec()
-      if(md5(password)===user.password){
+      const {username, password} = data
+      const user = await User.findOne({username}).exec()
+      if (md5(password) === user.password) {
         // 生成token
-        const secret='leehaitao'
+        const secret = 'leehaitao'
         const token = jsonwebtoken.sign({
-          data:{
-            _id:user._id,
+          data: {
+            _id: user._id,
             username
           },
-          exp: Math.floor(Date.now() / 1000) + (60 * 60),
-        },secret)
-        ctx.body=response(constants.CUSTOM_CODE.SUCCESS, {token}, '登录成功')
-      }else{
-        ctx.body=response(constants.CUSTOM_CODE.ERROR, {}, '密码错误')
+          exp: Math.floor(Date.now() / 1000) + (60 * 60)
+        }, secret)
+        ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {token}, '登录成功')
+      } else {
+        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '密码错误')
       }
     } catch (error) {
       console.log(error)

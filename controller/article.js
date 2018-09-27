@@ -4,12 +4,10 @@
 import {
   request,
   summary,
-  query,
   path,
   body,
   tags
 } from 'koa-swagger-decorator'
-const day = require('dayjs')
 import Article from '../models/article'
 const {
   CustomError
@@ -51,16 +49,16 @@ const articleSchema = {
   }
 }
 
-let ArticlePageSchema={
-  current:{
-    type:'number',
-    require:true,
-    default:1
+let ArticlePageSchema = {
+  current: {
+    type: 'number',
+    require: true,
+    default: 1
   },
-  pageSize:{
-    type:'number',
-    require:true,
-    default:10
+  pageSize: {
+    type: 'number',
+    require: true,
+    default: 10
   }
 }
 
@@ -72,13 +70,13 @@ let getArticleById = {
 }
 
 export default class ArticleController {
-  @request('post','/article/add')
+  @request('post', '/article/add')
   @summary('新增一篇文章')
   @ArticleTag
   @body(articleSchema)
   static async add (ctx, next) {
     try {
-      const { title, content, isPublish, categoryId, labelId} = ctx.request.body
+      const { title, content, isPublish, categoryId, labelId } = ctx.request.body
       ctx.checkBody('title').notEmpty()
       ctx.checkBody('content').notEmpty()
       ctx.checkBody('isPublish').notEmpty()
@@ -109,9 +107,9 @@ export default class ArticleController {
   @summary('删除一篇文章')
   @ArticleTag
   @path({
-    _id:{type:'string',require:true,descripttion:'唯一_id'}
+    _id: {type: 'string', require: true, descripttion: '唯一_id'}
   })
-  static async delete (ctx,next){
+  static async delete (ctx, next) {
     try {
       const { _id } = ctx.params
       ctx.checkParams('_id').notEmpty()
@@ -130,18 +128,18 @@ export default class ArticleController {
   @summary('修改一篇文章')
   @ArticleTag
   @body(articleSchema)
-  static async update(ctx, next) {
+  static async update (ctx, next) {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curArticle = await Article.findOne({_id:_id}).exec()
-      const getArticleToId= curArticle._id;
-      if(_id==getArticleToId){
-        const update_at =day(new Date()).format('YYYY-MM-DD HH:mm:ss')
-        const updateArttcle = JSON.stringify(Object.assign(data,{update_at}))
-        await Article.update({_id:getArticleToId},{$set:data}).exec()
+      const curArticle = await Article.findOne({_id: _id}).exec()
+      const getArticleToId = curArticle._id
+      if (_id === getArticleToId) {
+        // const updateAt = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        // const updateArttcle = JSON.stringify(Object.assign(data, {update_at: updateAt}))
+        await Article.update({_id: getArticleToId}, {$set: data}).exec()
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改文章成功')
-      }else{
+      } else {
         ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改文章失败')
       }
     } catch (error) {
@@ -153,17 +151,17 @@ export default class ArticleController {
   @summary('获取文章列表')
   @ArticleTag
   @body(ArticlePageSchema)
-  static async getArticleList(ctx,next){
+  static async getArticleList (ctx, next) {
     try {
-      const {pageSize,current} = ctx.request.body
-      const articles = await Article.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const {pageSize, current} = ctx.request.body
+      const articles = await Article.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
       const all = await Article.find().exec()
       const page = {
         current,
         pageSize,
-        total:all.length
+        total: all.length
       }
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, articles, '获取用户列表成功',page)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, articles, '获取用户列表成功', page)
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
@@ -172,11 +170,11 @@ export default class ArticleController {
   @summary('通过_id获取文章')
   @ArticleTag
   @body(getArticleById)
-  static async getArticleById(ctx,next) {
+  static async getArticleById (ctx, next) {
     try {
       const data = ctx.request.body
       const { _id } = data
-      const curArticle = await Article.findOne({_id:_id}).exec()
+      const curArticle = await Article.findOne({_id: _id}).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '获取文章详情成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)

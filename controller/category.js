@@ -4,7 +4,6 @@
 import {
   request,
   summary,
-  query,
   path,
   body,
   tags
@@ -19,8 +18,8 @@ const response = require('../utils/response')
 const CategoryTag = tags(['管理'])
 
 const categorySchema = {
-  _id:{
-    type:'string',
+  _id: {
+    type: 'string',
     descripttion: '唯一id'
   },
   name: {
@@ -29,25 +28,25 @@ const categorySchema = {
     descripttion: '分类名称'
   }
 }
-let CategoryPageSchema={
-  current:{
-    type:'number',
-    require:true,
-    default:1
+let CategoryPageSchema = {
+  current: {
+    type: 'number',
+    require: true,
+    default: 1
   },
-  pageSize:{
-    type:'number',
-    require:true,
-    default:10
+  pageSize: {
+    type: 'number',
+    require: true,
+    default: 10
   }
 }
 
 export default class CategoryController {
-  @request('post','/category/add')
+  @request('post', '/category/add')
   @summary('新建一个分类')
   @CategoryTag
   @body(categorySchema)
-  static async add (ctx,next) {
+  static async add (ctx, next) {
     try {
       const {name} = ctx.request.body
       ctx.checkBody('name').notEmpty()
@@ -61,13 +60,13 @@ export default class CategoryController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('delete','/category/delete/{_id}')
+  @request('delete', '/category/delete/{_id}')
   @summary('删除一个分类')
   @CategoryTag
   @path({
-    _id:{type:'string',require:true,descripttion:'唯一_id'}
+    _id: {type: 'string', require: true, descripttion: '唯一_id'}
   })
-  static async delete (ctx,next){
+  static async delete (ctx, next) {
     try {
       const {_id} = ctx.params
       ctx.checkParams('_id').notEmpty()
@@ -82,18 +81,18 @@ export default class CategoryController {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('post','/category/update')
+  @request('post', '/category/update')
   @summary('修改一个分类')
   @CategoryTag
   @body(categorySchema)
-  static async update (ctx,next){
+  static async update (ctx, next) {
     try {
       const data = ctx.request.body
       const {_id} = data
       const curCategory = await Category.findOne({_id}).exec()
-      const getCategoryId=curCategory._id
-      if(_id==getCategoryId){
-        await Category.update({_id:getCategoryId},{$set:data}).exec()
+      const getCategoryId = curCategory._id
+      if (_id === getCategoryId) {
+        await Category.update({_id: getCategoryId}, {$set: data}).exec()
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改分类成功')
       }
     } catch (error) {
@@ -104,17 +103,17 @@ export default class CategoryController {
   @summary('获取分类列表')
   @CategoryTag
   @body(CategoryPageSchema)
-  static async getUserList(ctx,next){
+  static async getUserList (ctx, next) {
     try {
-      const {pageSize,current} = ctx.request.body
-      const categories = await Category.find().skip(pageSize*(current-1)).limit(pageSize).sort({_id:-1}).exec()
+      const {pageSize, current} = ctx.request.body
+      const categories = await Category.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
       const all = await Category.find().exec()
       const page = {
         current,
         pageSize,
-        total:all.length
+        total: all.length
       }
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, categories, '获取分类列表成功',page)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, categories, '获取分类列表成功', page)
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }

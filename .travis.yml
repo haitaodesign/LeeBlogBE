@@ -8,6 +8,9 @@ before_install:
   - echo -e "Host 39.108.159.185\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 install:
   - yarn
+script:
+  - yarn run lint-fix
+  - yarn run lint
 after_success:
   # 删除开发时的依赖
   - npm prune --production
