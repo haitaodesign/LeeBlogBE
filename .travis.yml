@@ -5,7 +5,7 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_211c3aa61794_key -iv $encrypted_211c3aa61794_iv
     -in LeeBlog.pem.enc -out ~/.ssh/LeeBlog.pem -d
   - chmod 700 ~/.ssh/LeeBlog.pem
-  - echo -e "Host 39.108.159.185\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - echo -e "Host 39.108.159.185\n\tStrictHostKeyChecking no\n" >> ~/.ssh/authorized_keys
 install:
   - yarn
 script:
@@ -20,5 +20,6 @@ after_success:
   # - ssh -i ./LeeBlog.pem root@39.108.159.185
   # 复制压缩代码到生产服务器并解压
   - scp LeeBlogBE.tar root@39.108.159.185:~/usr/node
+  - echo yes
   # 启动PM2守护进程
 
