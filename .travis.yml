@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - '10'
+before_install:
+  - openssl aes-256-cbc -K $encrypted_211c3aa61794_key -iv $encrypted_211c3aa61794_iv
+    -in LeeBlog.pem.enc -out ~/.ssh/LeeBlog.pem -d
+  - chmod 700 ~/.ssh/LeeBlog.pem
+  - echo -e "Host 39.108.159.185\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+install:
+  - yarn
+script:
+  - yarn run lint-fix
+  - yarn run lint
+after_success:
+  # 删除开发时的依赖
+  - npm prune --production
+  # 项目源码打包压缩
+  - tar -jcf LeeBlogBE.tar *
+  # ssh 登录服务器
+  # - ssh -i ./LeeBlog.pem root@39.108.159.185
+  # 复制压缩代码到生产服务器并解压
+  - scp LeeBlogBE.tar root@39.108.159.185:~/usr/node
+  # 启动PM2守护进程
+
