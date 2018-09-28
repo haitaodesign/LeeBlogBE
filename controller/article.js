@@ -91,7 +91,7 @@ export default class ArticleController {
       let article = {
         title,
         content,
-        isPublish,
+        isPublish: Boolean(isPublish),
         category_id: categoryId,
         label_id: labelId,
         user_id: _id
@@ -99,7 +99,7 @@ export default class ArticleController {
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
     } catch (error) {
-      // console.log(error)
+      console.log(error)
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
