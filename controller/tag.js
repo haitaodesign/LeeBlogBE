@@ -110,7 +110,7 @@ export default class TagController {
   static async getLabelList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const labels = await Tag.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
+      const labels = await Tag.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await Tag.find().exec()
       const page = {
         current,

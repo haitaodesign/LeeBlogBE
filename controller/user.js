@@ -150,7 +150,7 @@ export default class UserController {
   static async getUserList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const users = await User.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
+      const users = await User.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await User.find().exec()
       const page = {
         current,
@@ -159,6 +159,7 @@ export default class UserController {
       }
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, users, '获取用户列表成功', page)
     } catch (error) {
+      console.log(error)
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
@@ -177,7 +178,7 @@ export default class UserController {
       }
       const {username, password} = data
       const user = await User.findOne({username}).exec()
-      if (md5(password) === user.password) {
+      if (user !== null && md5(password) === user.password) {
         // 生成token
         const secret = 'leehaitao'
         const token = jsonwebtoken.sign({
@@ -189,7 +190,7 @@ export default class UserController {
         }, secret)
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {token}, '登录成功')
       } else {
-        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '密码错误')
+        ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '用户名或密码错误')
       }
     } catch (error) {
       console.log(error)

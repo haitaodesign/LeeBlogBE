@@ -106,7 +106,7 @@ export default class CategoryController {
   static async getUserList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const categories = await Category.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
+      const categories = await Category.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await Category.find().exec()
       const page = {
         current,

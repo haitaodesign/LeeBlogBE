@@ -27,7 +27,7 @@ export default () => {
           message: 'token认证失败'
         }
       } else {
-        err.status = 404
+        ctx.status = 404
         ctx.body = {
           code: -1,
           message: err

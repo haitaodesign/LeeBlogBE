@@ -154,7 +154,7 @@ export default class ArticleController {
   static async getArticleList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const articles = await Article.find().skip(pageSize * (current - 1)).limit(pageSize).sort({_id: -1}).exec()
+      const articles = await Article.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await Article.find().exec()
       const page = {
         current,
@@ -170,7 +170,7 @@ export default class ArticleController {
   @summary('通过_id获取文章')
   @ArticleTag
   @body(getArticleById)
-  static async getArticleById (ctx, next) {
+  static async getArticleById (ctx) {
     try {
       const data = ctx.request.body
       const { _id } = data
