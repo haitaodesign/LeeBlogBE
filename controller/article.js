@@ -154,7 +154,7 @@ export default class ArticleController {
   static async getArticleList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const articles = await Article.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
+      const articles = await Article.find().populate({ path: 'label_id', model: 'tag' }).populate({ path: 'category_id', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await Article.find().exec()
       const page = {
         current,
