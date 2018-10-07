@@ -60,12 +60,14 @@ let LoginSchema = {
   username: {
     type: 'string',
     require: true,
-    descripttion: '用户名'
+    descripttion: '用户名',
+    example: 'admin'
   },
   password: {
     type: 'string',
     require: true,
-    descripttion: '密码'
+    descripttion: '密码',
+    example: '123456'
   }
 }
 
