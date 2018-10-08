@@ -43,8 +43,12 @@ const articleSchema = {
     descripttion: '目录id'
   },
   label_id: {
-    type: 'string',
+    type: 'array',
     require: true,
+    items: {
+      type: 'string',
+      example: 'tttt'
+    },
     descripttion: '标签id,多个，使用逗号拼接'
   }
 }
@@ -96,6 +100,7 @@ export default class ArticleController {
         label_id: labelId,
         user_id: _id
       }
+      console.log(article)
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
     } catch (error) {

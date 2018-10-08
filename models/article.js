@@ -8,5 +8,5 @@ module.exports = mongolass.model('article', {
   update_at: {type: 'string', require: true},
   user_id: {type: 'string', require: true},
   category_id: {type: 'string'},
-  label_id: {type: 'string'}
+  label_id: [{type: 'string'}]
 })
