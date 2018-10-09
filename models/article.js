@@ -7,6 +7,6 @@ module.exports = mongolass.model('article', {
   isPublish: {type: 'boolean', require: true},
   update_at: {type: 'string', require: true},
   user_id: {type: 'string', require: true},
-  category_id: {type: 'string'},
-  label_id: [{type: 'string'}]
+  categoryId: {type: 'string'},
+  labelId: [{type: 'string'}]
 })

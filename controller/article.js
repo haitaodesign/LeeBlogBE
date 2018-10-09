@@ -96,11 +96,10 @@ export default class ArticleController {
         title,
         content,
         isPublish: Boolean(isPublish),
-        category_id: categoryId,
-        label_id: labelId,
+        categoryId,
+        labelId,
         user_id: _id
       }
-      console.log(article)
       await Article.create(article).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
     } catch (error) {
@@ -139,7 +138,7 @@ export default class ArticleController {
       const {_id} = data
       const curArticle = await Article.findOne({_id: _id}).exec()
       const getArticleToId = curArticle._id
-      if (_id === getArticleToId) {
+      if (_id == getArticleToId) {
         // const updateAt = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
         // const updateArttcle = JSON.stringify(Object.assign(data, {update_at: updateAt}))
         await Article.update({_id: getArticleToId}, {$set: data}).exec()
@@ -159,7 +158,7 @@ export default class ArticleController {
   static async getArticleList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const articles = await Article.find().populate({ path: 'label_id', model: 'tag' }).populate({ path: 'category_id', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
+      const articles = await Article.find().populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await Article.find().exec()
       const page = {
         current,
