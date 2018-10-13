@@ -33,7 +33,7 @@ app.use(leeJwt())
 // 解析token中间件，获取信息以及设置失效时间
 const secret = 'leehaitao'
 app.use(koaJwt({secret}).unless({
-  path: [/\/api\/swagger-html/, /\/api\/swagger-json/, /\/api\/login/]
+  path: [/\/api\/swagger-html/, /\/api\/swagger-json/, /\/api\/login/, /\/api\/articles/]
 }))
 app.use(router.routes())
   .use(router.allowedMethods())
