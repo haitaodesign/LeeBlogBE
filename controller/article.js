@@ -178,7 +178,7 @@ export default class ArticleController {
     try {
       const data = ctx.request.body
       const { _id } = data
-      const curArticle = await Article.findOne({_id: _id}).exec()
+      const curArticle = await Article.findOne({_id: _id}).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).exec()
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '获取文章详情成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
