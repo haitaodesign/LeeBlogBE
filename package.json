@@ -4,7 +4,7 @@
   "description": "个人博客网站api",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo ok",
     "debug": "babel-node index --inspect --debug-brk --nolazy index",
     "dev:babel": "babel-node index",
     "dev": "nodemon --exec npm run dev:babel -L",
@@ -33,12 +33,15 @@
     "koa-body": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-jwt": "^3.3.1",
+    "koa-multer": "^1.0.2",
     "koa-router": "^7.4.0",
     "koa-validate": "^1.0.7",
     "koa2-cors": "^2.0.5",
     "log4js": "^2.5.3",
     "mongolass": "^4.2.0",
-    "objectid-to-timestamp": "^1.3.0"
+    "objectid-to-timestamp": "^1.3.0",
+    "v-click-outside": "^2.0.1",
+    "vue-shortkey": "^3.1.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
