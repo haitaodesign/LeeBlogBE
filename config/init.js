@@ -1,5 +1,5 @@
-import md5 from 'js-md5'
-const User = require('../models/user')
+var md5 = require('js-md5')
+var User = require('../models/user')
 class init {
   static async initAdmin () {
     try {
