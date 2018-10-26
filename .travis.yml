@@ -6,10 +6,7 @@ before_install:
   -in id_rsa.enc -out ~/.ssh/id_rsa -d
 - chmod 600 ~/.ssh/id_rsa
 - echo -e "Host 39.108.159.185\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-install:
-- yarn
 after_success:
-# - npm prune production # 删除devDevpendencies
 - tar -jcf leeblogbe.tar.bz2 *
 - scp leeblogbe.tar.bz2 root@39.108.159.185:/usr/share/nginx/blogbe
-- ssh root@39.108.159.185 'cd /usr/share/nginx/blogbe && tar jxSf leeblogbe.tar.bz2 -C LeeBlogBE && pm2 restart app'
+- ssh root@39.108.159.185 'cd /usr/share/nginx/blogbe && tar jxSf leeblogbe.tar.bz2 -C LeeBlogBE && yarn && pm2 restart app'
