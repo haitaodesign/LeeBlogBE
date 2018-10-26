@@ -13,3 +13,4 @@ after_success:
 - tar -jcf leeblogbe.tar.bz2 *
 - scp leeblogbe.tar.bz2 root@39.108.159.185:/usr/share/nginx/blogbe
 - ssh root@39.108.159.185 'cd /usr/share/nginx/blogbe/LeeBlogBE & tar -jxf leeblogbe.tar.bz2 -C LeeBlogBE & pm2 restart app'
+- rm -rf leeblogbe.tar.bz2
