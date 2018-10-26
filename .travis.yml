@@ -9,4 +9,7 @@ before_install:
 install:
 - yarn
 after_success:
-- ssh root@39.108.159.185 'cd /usr/share/nginx/blogbe/LeeBlogBE & git pull & pm2 restart app'
+- npm prune production # 删除devDevpendencies
+- tar -jcf leeblogbe.tar.bz2 *
+- scp leeblogbe.tar.bz2 root@39.108.159.185:~/usr/share/nginx/blogbe/LeeBlogBE
+- ssh root@39.108.159.185 'cd /usr/share/nginx/blogbe/LeeBlogBE & tar -jxf leeblogbe.tar.bz2 & pm2 restart app'
