@@ -72,6 +72,11 @@ let getArticleById = {
   _id: {
     type: 'string',
     descripttion: '唯一id'
+  },
+  isEdit: {
+    type: 'boolean',
+    require: true,
+    descripttion: '是否编辑'
   }
 }
 
@@ -180,9 +185,11 @@ export default class ArticleController {
   static async getArticleById (ctx) {
     try {
       const data = ctx.request.body
-      const { _id } = data
+      const { _id, isEdit } = data
       let curArticle = await Article.findOne({_id: _id}).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).exec()
-      curArticle.content = Marked(curArticle.content.replace('<--more>', ''))
+      if (!isEdit) {
+        curArticle.content = Marked(curArticle.content.replace('<--more>', ''))
+      }
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '获取文章详情成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
