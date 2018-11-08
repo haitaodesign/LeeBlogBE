@@ -10,6 +10,7 @@ import {
 } from 'koa-swagger-decorator'
 import Article from '../models/article'
 import Marked from 'marked'
+import day from 'dayjs'
 const {
   CustomError
 } = require('../utils/customError')
@@ -99,6 +100,7 @@ export default class ArticleController {
         isPublish: Boolean(isPublish),
         categoryId,
         labelId,
+        update_at: day(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         user_id: _id
       }
       await Article.create(article).exec()
@@ -140,8 +142,8 @@ export default class ArticleController {
       const curArticle = await Article.findOne({_id: _id}).exec()
       const getArticleToId = curArticle._id
       if (_id == getArticleToId) {
-        // const updateAt = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
-        // const updateArttcle = JSON.stringify(Object.assign(data, {update_at: updateAt}))
+        const updateAt = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        data.update_at = updateAt
         await Article.update({_id: getArticleToId}, {$set: data}).exec()
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改文章成功')
       } else {
