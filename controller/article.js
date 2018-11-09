@@ -65,6 +65,16 @@ let ArticlePageSchema = {
     type: 'number',
     require: true,
     default: 10
+  },
+  categoryId: {
+    type: 'string',
+    require: false,
+    default: ''
+  },
+  labelId: {
+    type: 'string',
+    require: false,
+    default: ''
   }
 }
 
@@ -166,15 +176,18 @@ export default class ArticleController {
   @body(ArticlePageSchema)
   static async getArticleList (ctx, next) {
     try {
-      const {pageSize, current} = ctx.request.body
-      const articles = await Article.find().populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
-      const all = await Article.find().exec()
+      const {pageSize, current, categoryId, labelId} = ctx.request.body
+      const term = {}
+      if (categoryId !== '') term.categoryId = categoryId
+      if (labelId !== '') term.labelId = labelId
+      const articles = await Article.find(term).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
+      const all = await Article.find(term).exec()
       const page = {
         current,
         pageSize,
         total: all.length
       }
-      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, articles, '获取用户列表成功', page)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, articles, '获取文章列表成功', page)
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
