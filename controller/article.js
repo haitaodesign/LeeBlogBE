@@ -89,6 +89,17 @@ let getArticleById = {
     descripttion: '是否编辑'
   }
 }
+let setPublish = {
+  _id: {
+    type: 'string',
+    descripttion: '唯一id'
+  },
+  isPublish: {
+    type: 'boolean',
+    require: true,
+    descripttion: '是否发布'
+  }
+}
 
 export default class ArticleController {
   @request('post', '/article/add')
@@ -206,6 +217,21 @@ export default class ArticleController {
         curArticle.content = Marked(curArticle.content.replace('<--more>', ''))
       }
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '获取文章详情成功')
+    } catch (error) {
+      throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
+    }
+  }
+  @request('post', '/article/setPublish')
+  @summary('文章发布状态更改为是或否')
+  @ArticleTag
+  @body(setPublish)
+  static async isPublish (ctx) {
+    try {
+      const data = ctx.request.body
+      const { _id, isPublish } = data
+      let curArticle = await Article.update({_id}, {$set: { isPublish }}).exec()
+      console.log(curArticle)
+      ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '发布状态修改成功！')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
