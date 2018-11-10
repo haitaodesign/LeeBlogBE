@@ -43,5 +43,5 @@ app.use(async () => {
   throw new HttpError(constants.HTTP_CODE.NOT_FOUND)
 })
 app.listen(config.port, () => {
-  console.log('server is running at http://localhost:3000')
+  console.log('server is running at http://localhost:3000/api/swagger-html')
 })
