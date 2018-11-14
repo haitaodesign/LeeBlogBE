@@ -4,6 +4,7 @@ import ip from 'ip'
 import koaBody from 'koa-body'
 import LeeError from './middleware/lee-error/index'
 import leeJwt from './middleware/lee-jwt/index'
+import Upload from './utils/upload.js'
 const app = new Koa()
 const config = require('config-lite')(__dirname)
 require('koa-validate')(app)
@@ -12,7 +13,7 @@ const koaCors = require('koa2-cors')
 const {HttpError} = require('./utils/customError')
 const constants = require('./utils/constants')
 const leeLog = require('./middleware/lee-log/index')
-
+const path = require('path')
 app.use(leeLog({
   env: app.env,
   projectName: 'leeblogfe',
@@ -24,7 +25,18 @@ app.use(koaCors())
 app.use(koaBody({
   multipart: true,
   formidable: {
-    keepExtensions: true
+    uploadDir: 'public/',
+    keepExtensions: true,
+    onFileBegin: (name, file) => {
+      const ext = Upload.getFileNameExtension(file.name)
+      const dirName = Upload.getUploadDirName()
+      const dir = path.join(__dirname, `public/upload/${dirName}`)
+      Upload.checkDirExist(dir)
+      const fileName = Upload.getUploadFileName(ext)
+      file.path = `${dir}/${fileName}`
+      app.context.uploadpath = app.context.uploadpath ? app.context.uploadpath : {}
+      app.context.uploadpath[name] = `${dirName}/${fileName}`
+    }
   }
 }))
 // 中间件的顺序很重要,顺序不对导致无法正确捕获异常
