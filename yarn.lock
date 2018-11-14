@@ -166,9 +166,9 @@
   version "3.2.2"
   resolved "http://registry.npm.taobao.org/@types/koa-compose/download/@types/koa-compose-3.2.2.tgz#dc106e000bbf92a3ac900f756df47344887ee847"
 
-"@types/koa-router@^7.0.30":
-  version "7.0.32"
-  resolved "http://registry.npm.taobao.org/@types/koa-router/download/@types/koa-router-7.0.32.tgz#a2d8adc65ad3d58aeb94d056650920c085817697"
+"@types/koa-router@^7.0.31":
+  version "7.0.33"
+  resolved "http://registry.npm.taobao.org/@types/koa-router/download/@types/koa-router-7.0.33.tgz#68d6ab67b71cc88cd5147a1fa23cde765f5bfad1"
   dependencies:
     "@types/koa" "*"
 
@@ -196,9 +196,9 @@
   version "10.11.0"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.11.0.tgz#ddd0d67a3b6c3810dd1a59e36675fa82de5e19ae"
 
-"@types/ramda@^0.25.34":
-  version "0.25.38"
-  resolved "http://registry.npm.taobao.org/@types/ramda/download/@types/ramda-0.25.38.tgz#6c945fcc91a5fa470cc3c5a4cd4a62d7f8d03576"
+"@types/ramda@^0.25.36":
+  version "0.25.41"
+  resolved "http://registry.npm.taobao.org/@types/ramda/download/@types/ramda-0.25.41.tgz#c965160129d7e8345e40508858514f8ec7af706f"
 
 "@types/range-parser@*":
   version "1.2.2"
@@ -3011,13 +3011,13 @@ koa-router@^7.2.1, koa-router@^7.4.0:
     path-to-regexp "^1.1.1"
     urijs "^1.19.0"
 
-koa-swagger-decorator@^1.3.0:
-  version "1.5.9"
-  resolved "http://registry.npm.taobao.org/koa-swagger-decorator/download/koa-swagger-decorator-1.5.9.tgz#16c0dcc82ea0531090661757f5d01d70e4f8da21"
+koa-swagger-decorator@^1.5.11:
+  version "1.5.11"
+  resolved "http://registry.npm.taobao.org/koa-swagger-decorator/download/koa-swagger-decorator-1.5.11.tgz#16c54c942fdfb6cd53fe0d94de352fd612a99bd5"
   dependencies:
     "@types/globby" "^8.0.0"
-    "@types/koa-router" "^7.0.30"
-    "@types/ramda" "^0.25.34"
+    "@types/koa-router" "^7.0.31"
+    "@types/ramda" "^0.25.36"
     globby "^8.0.1"
     is-type-of "^1.2.0"
     koa-router "^7.2.1"
