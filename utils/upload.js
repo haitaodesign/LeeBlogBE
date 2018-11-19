@@ -1,6 +1,5 @@
 
 const fs = require('fs')
-const path = require('path')
 const qiniu = require('qiniu')
 const cdnConfig = require('../config/default.js')
 const { ak, sk, bucket } = cdnConfig.qiniu
