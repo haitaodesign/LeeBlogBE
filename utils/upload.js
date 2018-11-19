@@ -1,5 +1,9 @@
 
 const fs = require('fs')
+const path = require('path')
+const qiniu = require('qiniu')
+const cdnConfig = require('../config/default.js')
+const { ak, sk, bucket } = cdnConfig.qiniu
 // 文件操作方法
 
 export default class Upload {
@@ -34,5 +38,34 @@ export default class Upload {
    */
   static getUploadFileName (ext) {
     return `${Date.now()}${Number.parseInt(Math.random() * 10000)}.${ext}`
+  }
+  /**
+   * 上传至七牛云
+   * @param {*} key 文件
+   * @param {*} file 文件所在目录
+   */
+  static uploadQiNiu (key, file) {
+    const mac = new qiniu.auth.digest.Mac(ak, sk)
+    const config = new qiniu.conf.Config()
+    config.zone = qiniu.zone.Zone_z2
+    const options = {
+      scope: bucket + ':' + key
+    }
+    const fromUploader = new qiniu.form_up.FormUploader(config)
+    const putExtra = new qiniu.form_up.PutExtra()
+    const putPolicy = new qiniu.rs.PutPolicy(options)
+    const uploadToken = putPolicy.uploadToken(mac)
+    return new Promise((resolve, reject) => {
+      fromUploader.putFile(uploadToken, key, file, putExtra, (err, body, info) => {
+        if (err) {
+          return reject(err)
+        }
+        if (info.statusCode === 200) {
+          resolve(body)
+        } else {
+          reject(body)
+        }
+      })
+    })
   }
 }
