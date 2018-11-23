@@ -189,8 +189,8 @@ export default class ArticleController {
     try {
       const {pageSize, current, categoryId, labelId} = ctx.request.body
       const term = {}
-      if (categoryId !== '') term.categoryId = categoryId
-      if (labelId !== '') term.labelId = labelId
+      if (categoryId) term.categoryId = categoryId
+      if (labelId) term.labelId = labelId
       const articles = await Article.find(term).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
       const all = await Article.find(term).exec()
       const page = {
