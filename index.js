@@ -6,7 +6,6 @@ import LeeError from './middleware/lee-error/index'
 import leeJwt from './middleware/lee-jwt/index'
 import Upload from './utils/upload.js'
 const app = new Koa()
-const config = require('config-lite')(__dirname)
 require('koa-validate')(app)
 const koaJwt = require('koa-jwt')
 const koaCors = require('koa2-cors')
@@ -14,6 +13,15 @@ const {HttpError} = require('./utils/customError')
 const constants = require('./utils/constants')
 const leeLog = require('./middleware/lee-log/index')
 const path = require('path')
+const fs = require('fs')
+const ACMClient = require('acm-client').ACMClient
+const acm = new ACMClient({
+  endpoint: 'acm.aliyun.com', // Available in the ACM console
+  namespace: '74287c23-99f8-4dc1-945b-ed3c8eb5b68b', // Available in the ACM console
+  accessKey: '9b302fba53004a2f8463989f5dcb0a10', // Available in the ACM console
+  secretKey: 'HeMN2SoTlZFpOISd+iVZyAIO5gM=', // Available in the ACM console
+  requestTimeout: 6000 // Request timeout, 6s by default
+})
 app.use(leeLog({
   env: app.env,
   projectName: 'leeblogfe',
@@ -54,6 +62,19 @@ app.use(router.routes())
 app.use(async () => {
   throw new HttpError(constants.HTTP_CODE.NOT_FOUND)
 })
-app.listen(config.port, () => {
-  console.log('server is running at http://localhost:3000/api/swagger-html')
-})
+// 主动拉取配置
+const initAcm = async () => {
+  const content = await acm.getConfig('test-acm', 'DEFAULT_GROUP')
+  // 写入配置文件
+  const file = path.join(__dirname, 'config/default.json')
+  fs.writeFile(file, content, (err) => {
+    if (err) throw err
+    ininApp(JSON.parse(content).app)
+  })
+}
+initAcm()
+function ininApp (configb) {
+  app.listen(configb.port, () => {
+    console.log('server is running at http://localhost:3000/api/swagger-html')
+  })
+}

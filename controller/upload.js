@@ -11,7 +11,7 @@ import {
   middlewares
 } from 'koa-swagger-decorator'
 import UploadQiNiu from '../utils/upload.js'
-const cdnConfig = require('../config/default.js')
+const cdnConfig = require('config-lite')(__dirname)
 const { imgDomain } = cdnConfig.qiniu
 const {
   CustomError

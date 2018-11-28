@@ -1,7 +1,8 @@
 
 const fs = require('fs')
 const qiniu = require('qiniu')
-const cdnConfig = require('../config/default.js')
+const cdnConfig = require('config-lite')(__dirname)
+
 const { ak, sk, bucket } = cdnConfig.qiniu
 // 文件操作方法
 
