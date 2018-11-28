@@ -7,7 +7,7 @@
     "test": "echo ok",
     "debug": "babel-node index --inspect --debug-brk --nolazy index",
     "dev:babel": "babel-node index",
-    "dev": "nodemon --exec npm run dev:babel -L",
+    "dev": "nodemon --exec npm run dev:babel -L -i ./config",
     "lint": "eslint --ext .js ./",
     "lint-fix": "eslint --fix ./"
   },
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/haitaodesign/LeeBlogBE#readme",
   "dependencies": {
+    "acm-client": "^3.0.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.0",
@@ -57,6 +58,6 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.1.0",
-    "nodemon": "^1.17.3"
+    "nodemon": "^1.18.7"
   }
 }
