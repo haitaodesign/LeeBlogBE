@@ -1,5 +1,5 @@
 /node_modules/
 /logs/
 LeeBlog.pem
-config/default.js
+config/default.json
 /public/
