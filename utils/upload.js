@@ -68,4 +68,22 @@ export default class Upload {
       })
     })
   }
+  static deleteQiNiu (key) {
+    const mac = new qiniu.auth.digest.Mac(ak, sk)
+    const config = new qiniu.conf.Config()
+    config.zone = qiniu.zone.Zone_z2
+    const bucketManager = new qiniu.rs.BucketManager(mac, config)
+    return new Promise((resolve, reject) => {
+      bucketManager.delete(bucket, key, (err, body, info) => {
+        if (err) {
+          return reject(err)
+        }
+        if (info.statusCode === 200) {
+          resolve(body)
+        } else {
+          reject(body)
+        }
+      })
+    })
+  }
 }
