@@ -20,7 +20,7 @@ const constants = require('../utils/constants')
 const response = require('../utils/response')
 const QiNiuTag = tags(['七牛云'])
 export default class Upload {
-  @request('post', '/upload')
+  @request('post', '/img/upload')
   @summary('七牛云图片上传接口代理')
   @QiNiuTag
   @formData({
@@ -41,7 +41,7 @@ export default class Upload {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
     }
   }
-  @request('post', '/delete')
+  @request('post', '/img/delete')
   @summary('七牛云图片删除接口代理')
   @QiNiuTag
   @body({
