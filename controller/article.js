@@ -212,7 +212,6 @@ export default class ArticleController {
       const data = ctx.request.body
       const { _id, isEdit } = data
       let curArticle = await Article.findOne({_id: _id}).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).exec()
-      console.log(isEdit)
       if (isEdit === 'false') {
         curArticle.content = Marked(curArticle.content.replace('<--more>', ''))
       }
