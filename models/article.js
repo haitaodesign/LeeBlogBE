@@ -1,13 +1,15 @@
 'use strict'
-const mongolass = require('../lib/mongo')
+const mongoose = require('../lib/mongo')
 
-module.exports = mongolass.model('article', {
+const articleSchems = new mongoose.Schema({
   title: {type: 'string', require: true},
   content: {type: 'string', require: true},
   isPublish: {type: 'boolean', require: true},
-  update_at: {type: 'string', require: true},
-  createAt: {type: 'string', require: true},
   user_id: {type: 'string', require: true},
   categoryId: {type: 'string'},
-  labelId: [{type: 'string'}]
+  labelId: {type: 'array'}
+}, {
+  timestamps: {createdAt: 'createdAt', updatedAt: 'updatedAt'}
 })
+
+module.exports = mongoose.model('article', articleSchems)

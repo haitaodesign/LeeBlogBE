@@ -54,7 +54,7 @@ export default class CategoryController {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
-      await Category.create({name}).exec()
+      await Category.create({name})
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '分类添加成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
@@ -75,7 +75,7 @@ export default class CategoryController {
         throw new Error(ctx.errors[0][field])
       }
       // 删除之前应该查找此标签是否被使用，若被使用则不能删除
-      await Category.deleteOne({_id}).exec()
+      await Category.deleteOne({_id})
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除分类成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
@@ -89,10 +89,10 @@ export default class CategoryController {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curCategory = await Category.findOne({_id}).exec()
+      const curCategory = await Category.findOne({_id})
       const getCategoryId = curCategory._id
-      if (_id === getCategoryId) {
-        await Category.update({_id: getCategoryId}, {$set: data}).exec()
+      if (_id === getCategoryId.toString()) {
+        await Category.update({_id: getCategoryId}, {$set: data})
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改分类成功')
       }
     } catch (error) {
@@ -106,8 +106,8 @@ export default class CategoryController {
   static async getUserList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const categories = await Category.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
-      const all = await Category.find().exec()
+      const categories = await Category.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1})
+      const all = await Category.find()
       const page = {
         current,
         pageSize,

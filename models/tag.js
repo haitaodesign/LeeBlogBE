@@ -1,6 +1,6 @@
 'use strict'
-const mongolass = require('../lib/mongo')
+const mongoose = require('../lib/mongo')
 
-module.exports = mongolass.model('tag', {
+module.exports = mongoose.model('tag', {
   name: {type: 'string', require: true}
 })

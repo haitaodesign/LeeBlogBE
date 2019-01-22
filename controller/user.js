@@ -97,7 +97,7 @@ export default class UserController {
         avatar
       }
       // 写入数据库，数据层交互可以分service层
-      await User.create(user).exec()
+      await User.create(user)
       // 数据响应
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '用户添加成功')
     } catch (error) {
@@ -118,7 +118,7 @@ export default class UserController {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
-      await User.deleteOne({_id}).exec()
+      await User.deleteOne({_id})
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除用户成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
@@ -132,11 +132,13 @@ export default class UserController {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curUser = await User.findOne({_id: _id}).exec()
+      console.log('_id', _id)
+      const curUser = await User.findById(_id)
       console.log(curUser)
       const getUserToId = curUser._id
-      if (_id === getUserToId) {
-        await User.update({_id: getUserToId}, {$set: data}).exec()
+      console.log(_id === getUserToId.toString())
+      if (_id === getUserToId.toString()) {
+        await User.update({_id: getUserToId}, {$set: data})
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改用户成功')
       } else {
         ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改用户失败')
@@ -152,8 +154,8 @@ export default class UserController {
   static async getUserList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const users = await User.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
-      const all = await User.find().exec()
+      const users = await User.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1})
+      const all = await User.find()
       const page = {
         current,
         pageSize,
@@ -179,7 +181,7 @@ export default class UserController {
         throw new Error(ctx.errors[0][field])
       }
       const {username, password} = data
-      const user = await User.findOne({username}).exec()
+      const user = await User.findOne({username})
       if (user !== null && md5(password) === user.password) {
         // 生成token
         const secret = 'leehaitao'

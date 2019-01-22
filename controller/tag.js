@@ -58,7 +58,7 @@ export default class TagController {
         let field = Object.keys(ctx.errors[0])
         throw new Error(ctx.errors[0][field])
       }
-      await Tag.create({name}).exec()
+      await Tag.create({name})
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '标签添加成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
@@ -79,7 +79,7 @@ export default class TagController {
         throw new Error(ctx.errors[0][field])
       }
       // 删除之前应该查找此标签是否被使用，若被使用则不能删除
-      await Tag.deleteOne({_id}).exec()
+      await Tag.deleteOne({_id})
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除标签成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
@@ -93,10 +93,10 @@ export default class TagController {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curLabel = await Tag.findOne({_id}).exec()
+      const curLabel = await Tag.findOne({_id})
       const getLabelId = curLabel._id
-      if (_id === getLabelId) {
-        await Tag.update({_id: getLabelId}, {$set: data}).exec()
+      if (_id === getLabelId.toString()) {
+        await Tag.update({_id: getLabelId}, {$set: data})
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改标签成功')
       }
     } catch (error) {
@@ -110,8 +110,8 @@ export default class TagController {
   static async getLabelList (ctx, next) {
     try {
       const {pageSize, current} = ctx.request.body
-      const labels = await Tag.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
-      const all = await Tag.find().exec()
+      const labels = await Tag.find().skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1})
+      const all = await Tag.find()
       const page = {
         current,
         pageSize,

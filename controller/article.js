@@ -126,11 +126,9 @@ export default class ArticleController {
         isPublish: Boolean(isPublish),
         categoryId,
         labelId,
-        update_at: day(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-        createAt: day(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         user_id: _id
       }
-      await Article.create(article).exec()
+      await Article.create(article)
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '文章添加成功')
     } catch (error) {
       console.log(error)
@@ -152,7 +150,7 @@ export default class ArticleController {
         throw new Error(ctx.errors[0][field])
       }
 
-      await Article.deleteOne({_id}).exec()
+      await Article.deleteOne({_id})
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '删除文章成功')
     } catch (error) {
       throw new CustomError(constants.HTTP_CODE.BAD_REQUEST, error.message)
@@ -166,12 +164,12 @@ export default class ArticleController {
     try {
       const data = ctx.request.body
       const {_id} = data
-      const curArticle = await Article.findOne({_id: _id}).exec()
+      const curArticle = await Article.findOne({_id: _id})
       const getArticleToId = curArticle._id
       if (_id == getArticleToId) {
         const updateAt = day(new Date()).format('YYYY-MM-DD HH:mm:ss')
         data.update_at = updateAt
-        await Article.update({_id: getArticleToId}, {$set: data}).exec()
+        await Article.update({_id: getArticleToId}, {$set: data})
         ctx.body = response(constants.CUSTOM_CODE.SUCCESS, {}, '修改文章成功')
       } else {
         ctx.body = response(constants.CUSTOM_CODE.ERROR, {}, '修改文章失败')
@@ -191,8 +189,8 @@ export default class ArticleController {
       const term = {}
       if (categoryId) term.categoryId = categoryId
       if (labelId) term.labelId = labelId
-      const articles = await Article.find(term).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1}).exec()
-      const all = await Article.find(term).exec()
+      const articles = await Article.find(term).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).skip(pageSize * (current - 1)).limit(parseInt(pageSize)).sort({_id: -1})
+      const all = await Article.find(term)
       const page = {
         current,
         pageSize,
@@ -211,7 +209,7 @@ export default class ArticleController {
     try {
       const data = ctx.request.body
       const { _id, isEdit } = data
-      let curArticle = await Article.findOne({_id: _id}).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' }).exec()
+      let curArticle = await Article.findOne({_id: _id}).populate({ path: 'labelId', model: 'tag' }).populate({ path: 'categoryId', model: 'category' })
       if (isEdit === 'false') {
         curArticle.content = Marked(curArticle.content.replace('<--more>', ''))
       }
@@ -228,7 +226,7 @@ export default class ArticleController {
     try {
       const data = ctx.request.body
       const { _id, isPublish } = data
-      let curArticle = await Article.update({_id}, {$set: { isPublish }}).exec()
+      let curArticle = await Article.update({_id}, {$set: { isPublish }})
       console.log(curArticle)
       ctx.body = response(constants.CUSTOM_CODE.SUCCESS, curArticle, '发布状态修改成功！')
     } catch (error) {

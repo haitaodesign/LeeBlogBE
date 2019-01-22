@@ -1,7 +1,7 @@
 'use strict'
-const mongolass = require('../lib/mongo')
+const mongoose = require('../lib/mongo')
 
-module.exports = mongolass.model('user', {
+module.exports = mongoose.model('user', {
   username: {type: 'string', require: true},
   password: {type: 'string', require: true},
   email: {type: 'string'},
