@@ -1,6 +1,6 @@
 import { request, summary, body, tags, middlewares, description } from 'koa-swagger-decorator'
 import axios from 'axios'
-const tag = tags(['Fixer.io'])
+const tag = tags(['fixer'])
 
 const userSchema = {
   base: { type: 'string', required: true }

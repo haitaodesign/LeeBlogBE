@@ -1,6 +1,5 @@
 import Router from 'koa-router'
 import User from '../controller/user'
-// import Test from '../controller/test'
 import Tag from '../controller/tag'
 import Category from '../controller/category'
 import Article from '../controller/article'

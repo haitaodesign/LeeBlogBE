@@ -17,7 +17,7 @@ const {
 const constants = require('../utils/constants')
 const response = require('../utils/response')
 
-const testTag = tags(['用户管理'])
+const testTag = tags(['user'])
 const userSchema = {
   _id: {
     type: 'string',

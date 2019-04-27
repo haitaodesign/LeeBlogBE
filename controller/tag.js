@@ -15,7 +15,7 @@ const {
 const constants = require('../utils/constants')
 const response = require('../utils/response')
 
-const LabelTag = tags(['标签管理'])
+const LabelTag = tags(['tag'])
 
 const labelSchema = {
   name: {

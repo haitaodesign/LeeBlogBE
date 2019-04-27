@@ -17,7 +17,7 @@ const {
 const constants = require('../utils/constants')
 const response = require('../utils/response')
 
-const ArticleTag = tags(['文章管理'])
+const ArticleTag = tags(['article'])
 
 const articleSchema = {
   _id: {

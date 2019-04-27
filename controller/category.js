@@ -15,7 +15,7 @@ const {
 const constants = require('../utils/constants')
 const response = require('../utils/response')
 
-const CategoryTag = tags(['管理'])
+const CategoryTag = tags(['category'])
 
 const categorySchema = {
   _id: {

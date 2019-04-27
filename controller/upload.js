@@ -4,11 +4,9 @@
 import {
   request,
   summary,
-  path,
   body,
   tags,
-  formData,
-  middlewares
+  formData
 } from 'koa-swagger-decorator'
 import UploadQiNiu from '../utils/upload.js'
 const cdnConfig = require('config-lite')(__dirname)
@@ -18,7 +16,7 @@ const {
 } = require('../utils/customError')
 const constants = require('../utils/constants')
 const response = require('../utils/response')
-const QiNiuTag = tags(['七牛云'])
+const QiNiuTag = tags(['qiniu'])
 export default class Upload {
   @request('post', '/img/upload')
   @summary('七牛云图片上传接口代理')
